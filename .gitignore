@@ -1,0 +1,15 @@
+# Rendered artifacts (regenerate with scripts/)
+issues/*/qa/
+issues/*/wechat_upload/
+issues/*/*.png
+issues/*/*.jpg
+issues/*/*.zip
+template/*.png
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# OS
+.DS_Store

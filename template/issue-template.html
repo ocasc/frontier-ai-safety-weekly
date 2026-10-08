@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>Frontier AI Safety Weekly — issue template</title>
+<!--
+  Layout template. Copy this file to issues/<id>/issue.html, replace the
+  placeholder text, and keep importance_order.json in sync with the cards'
+  .title-en text, data-category and data-importance-rank.
+
+  Numbering rule: .pnum (cards), .num (TLDR) and .lnum (links) must all run
+  1..N in display order. Cards are grouped by category; within a group keep
+  importance_rank ascending, and order groups by their first rank.
+-->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #fff; font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; color: #23262A; }
+  .wechat-container { max-width: 640px; margin: 0 auto; padding: 26px 22px 30px; }
+  .issue-head { padding-bottom: 14px; border-bottom: 1px solid #e2e4e8; }
+  .brand { font-size: 13px; font-weight: 700; letter-spacing: 3px; color: #16181D; }
+  .caption { font-size: 13.5px; color: #8A9099; margin-top: 7px; line-height: 1.7; }
+  h1 { font-size: 25px; font-weight: 700; color: #16181D; line-height: 1.42; margin: 22px 0 14px; letter-spacing: 0.3px; }
+  .section { margin-top: 54px; }
+  .h2 { display: block; width: fit-content; background: #16181D; color: #fff; font-size: 16px; font-weight: 700; letter-spacing: 0.5px; padding: 8px 16px; border-radius: 3px; margin-bottom: 22px; }
+  .cat-head { display: block; width: fit-content; color: #fff; font-size: 15.5px; font-weight: 700; letter-spacing: 0.5px; padding: 6px 14px; border-radius: 3px; margin: 32px 0 16px; }
+  .card { background: transparent; border: 1px solid #4b5563; border-radius: 6px; padding: 21px 24px; margin-bottom: 16px; }
+  .h3 { font-size: 21px; font-weight: 700; color: #16181D; line-height: 1.5; }
+  .pnum { font-size: 22px; font-weight: 700; color: #16181D; margin-right: 10px; }
+  .title-en { display: block; font-size: 14px; font-weight: 400; color: #6b7280; margin-top: 5px; line-height: 1.55; letter-spacing: 0.1px; }
+  .meta { font-size: 13px; color: #8A9099; margin: 10px 0 12px; }
+  .card ul { margin: 12px 0 2px; padding-left: 18px; }
+  .card li { font-size: 15.5px; line-height: 1.95; margin-bottom: 9px; }
+  .card li strong { font-weight: 700; color: #16181D; }
+
+  .map-box { margin-top: 22px; }
+  .map-head { font-size: 14.5px; font-weight: 700; margin-bottom: 10px; padding-bottom: 7px; border-bottom: 1px solid #E9ECF0; letter-spacing: 0.3px; }
+  .map-item { font-size: 15px; line-height: 1.85; color: #23262A; margin-bottom: 7px; padding-left: 32px; text-indent: -32px; }
+  .num { display: inline-flex; width: 24px; height: 20px; align-items: center; justify-content: center; border-radius: 5px; font-size: 12px; font-weight: 700; margin-right: 8px; vertical-align: middle; text-indent: 0; }
+  .figure { margin: 34px 0 10px; }
+  .card .figure { margin: 16px 0 2px; background: transparent; border: none; border-radius: 0; padding: 0; }
+  .card .figure img { width: calc(100% + 24px); margin-left: -12px; border: none; border-radius: 4px; }
+  .fig-title { font-size: 16px; font-weight: 700; color: #16181D; margin: 10px 0 2px; line-height: 1.55; }
+  .quote { background: transparent; border: 1px solid #e2e4e8; border-radius: 6px; padding: 15px 17px; margin: 16px 0 2px; }
+  .quote-text { font-size: 15px; line-height: 1.85; color: #23262A; }
+  .quote-text code { font-family: Menlo, Consolas, monospace; font-size: 12.5px; background: #F3F4F6; padding: 1px 5px; border-radius: 3px; color: #33373D; }
+  .quote-src { font-size: 13px; color: #8A9099; margin-top: 9px; line-height: 1.75; }
+  .q-label { font-family: Menlo, Consolas, monospace; font-size: 12px; font-weight: 700; color: #6b7280; letter-spacing: 0.3px; margin: 13px 0 5px; }
+  .q-label:first-child { margin-top: 0; }
+  .q-body { font-size: 14px; line-height: 1.8; color: #23262A; }
+  .q-mono { font-family: Menlo, Consolas, monospace; font-size: 12px; line-height: 1.75; overflow-wrap: anywhere; }
+  .link-list { font-size: 13.5px; line-height: 2.3; color: #4A4F57; word-break: break-all; }
+  .link-item { padding-left: 52px; text-indent: -26px; margin-bottom: 3px; }
+  .link-list .lnum { display: inline-block; width: 26px; font-weight: 700; color: #16181D; }
+  .footnote { font-size: 13px; color: #8A9099; border-top: 1px solid #e2e4e8; padding-top: 14px; margin-top: 46px; line-height: 1.8; }
+</style>
+</head>
+<body>
+<div class="wechat-container">
+
+  <div class="issue-head">
+    <div class="brand">FRONTIER AI SAFETY WEEKLY</div>
+    <div class="caption">Vol. N ｜ YYYY-MM-DD → MM-DD</div>
+  </div>
+
+  <h1>本周 N 篇：一句话主题（示例，请替换）</h1>
+
+  <!-- Optional cover illustration (900x383, rendered by scripts/render_cover.py):
+  <img src="img/cover@2x.png" alt="" style="width: 100%; display: block; margin: 22px 0 8px; border-radius: 6px;">
+  -->
+
+  <div class="section">
+    <div class="h2">TLDR</div>
+    <div class="tldr-panel" style="background: #FAFAFB; border: 1px solid #E7EAEE; border-radius: 10px; padding: 22px 26px 14px;">
+      <div class="map-box">
+        <!-- One .map-box per category; .map-head label must match the .cat-head label below -->
+        <div class="map-head" style="color:#A25433;">Misalignment｜错对齐案例</div>
+        <div class="map-item" data-category="错对齐"><span class="num" style="background:#F4EBE6;color:#A25433;">1</span>TLDR 一句话摘要（示例）：事件主体 + 做了什么 + 关键数字。</div>
+        <div class="map-item" data-category="错对齐"><span class="num" style="background:#F4EBE6;color:#A25433;">2</span>TLDR 一句话摘要（示例）：事件主体 + 做了什么 + 关键数字。</div>
+      </div>
+      <div class="map-box">
+        <div class="map-head" style="color:#3D5A94;">Oversight &amp; Control｜监督与控制</div>
+        <div class="map-item" data-category="监督与控制"><span class="num" style="background:#E9EEF6;color:#3D5A94;">3</span>TLDR 一句话摘要（示例）：事件主体 + 做了什么 + 关键数字。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section articles">
+
+    <div class="cat-head" style="background:#A25433;">Misalignment｜错对齐案例</div>
+
+    <div class="card" data-category="错对齐" data-importance-rank="1">
+      <div class="h3"><span class="pnum">1</span>卡片标题（示例，请替换）
+        <span class="title-en">Example story one · Example Source · Sep 01</span>
+      </div>
+      <div class="meta">来源：Source，Sep 01｜时间/范围限定语</div>
+      <!-- Evidence figure (quote the original + attribute; never redraw paper figures):
+      <div class="figure">
+        <img src="img/example.png" style="width: 100%; border: 1px solid #e2e4e8; border-radius: 6px;">
+        <div class="fig-title">图：图片说明（来源）</div>
+      </div>
+      -->
+      <ul>
+        <li><strong>做了什么：</strong>背景与动作（示例）。</li>
+        <li><strong>核心：</strong>关键结果、数字与条件（示例）。</li>
+        <li><strong>为什么重要：</strong>对读者的直接含义（示例）。</li>
+      </ul>
+    </div>
+
+    <div class="card" data-category="错对齐" data-importance-rank="3">
+      <div class="h3"><span class="pnum">2</span>卡片标题（示例，请替换）
+        <span class="title-en">Example story two · Example Source · Sep 02</span>
+      </div>
+      <div class="meta">来源：Source，Sep 02｜时间/范围限定语</div>
+      <ul>
+        <li><strong>经过：</strong>事故类卡片用「经过 / 核心 / 为什么重要」三段式（示例）。</li>
+        <li><strong>核心：</strong>处置与边界（示例）。</li>
+        <li><strong>为什么重要：</strong>可复用的素材或教训（示例）。</li>
+      </ul>
+    </div>
+
+    <div class="cat-head" style="background:#3D5A94;">Oversight &amp; Control｜监督与控制</div>
+
+    <div class="card" data-category="监督与控制" data-importance-rank="2">
+      <div class="h3"><span class="pnum">3</span>卡片标题（示例，请替换）
+        <span class="title-en">Example story three · Example Source · Sep 03</span>
+      </div>
+      <div class="meta">来源：Source，Sep 03｜时间/范围限定语</div>
+      <!-- Structured content without a usable figure: hierarchical table.
+           Every table needs a colgroup whose widths sum to 100%. -->
+      <table class="optimized-table" style="width:100%;table-layout:fixed;border-collapse:collapse;margin:16px 0 6px;font-size:13px;line-height:1.7;">
+        <colgroup><col style="width:20%;"><col style="width:30%;"><col style="width:50%;"></colgroup>
+        <tr>
+          <th style="border:1px solid #e2e4e8;padding:6px 9px;text-align:left;vertical-align:top;background:#F3F4F6;font-weight:700;overflow-wrap:anywhere;">维度</th>
+          <th style="border:1px solid #e2e4e8;padding:6px 9px;text-align:left;vertical-align:top;background:#F3F4F6;font-weight:700;overflow-wrap:anywhere;">措施</th>
+          <th style="border:1px solid #e2e4e8;padding:6px 9px;text-align:left;vertical-align:top;background:#F3F4F6;font-weight:700;overflow-wrap:anywhere;">边界与待补项</th>
+        </tr>
+        <tr>
+          <td style="border:1px solid #e2e4e8;padding:6px 9px;text-align:left;vertical-align:top;overflow-wrap:anywhere;font-weight:700;">示例行 A</td>
+          <td style="border:1px solid #e2e4e8;padding:6px 9px;text-align:left;vertical-align:top;overflow-wrap:anywhere;">示例（请替换）</td>
+          <td style="border:1px solid #e2e4e8;padding:6px 9px;text-align:left;vertical-align:top;overflow-wrap:anywhere;">示例（请替换）</td>
+        </tr>
+      </table>
+      <ul>
+        <li><strong>做了什么：</strong>示例。</li>
+        <li><strong>核心：</strong>示例。</li>
+        <li><strong>为什么重要：</strong>示例。</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="section">
+    <div class="h2">本期链接汇总</div>
+    <!-- Hanging indent lives on .link-item (padding-left + text-indent), never on .link-list -->
+    <div class="link-list">
+      <div class="link-item"><span class="lnum">1</span>https://example.com/story-one</div>
+      <div class="link-item"><span class="lnum">2</span>https://example.com/story-two</div>
+      <div class="link-item"><span class="lnum">3</span>https://example.com/story-three</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="footnote">说明（示例）：数字、日期与结论均转述自公开原文，条件与局限一并列出；论文图保持原图或注明来源的翻译版，本刊不重绘论文图；正式发布时全部链接置于「阅读原文」。</div>
+  </div>
+
+</div>
+</body>
+</html>
