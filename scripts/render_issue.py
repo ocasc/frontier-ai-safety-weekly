@@ -6,7 +6,7 @@ Usage:
     python3 scripts/render_issue.py issues/demo     # one issue
 
 Per issue directory (issue.html + importance_order.json) this produces:
-    <id>.png                  full long image (1200 px wide, @2x)
+    <id>.png                  full long image (960 px wide, @2x)
     wechat_upload/part*.jpg   WeChat upload slices cut at card gaps
                               (each < 15,000 px tall and < 10 MB)
     qa/<id>_checks.json       structural check dump
@@ -45,8 +45,8 @@ CHROME_CANDIDATES = [
     "/usr/bin/chromium",
     "/usr/bin/chromium-browser",
 ]
-VIEWPORT_WIDTH = 600      # CSS px; the layout container is 640 px max
-DEVICE_SCALE = 2          # output is 1200 px wide
+VIEWPORT_WIDTH = 480      # CSS px; keeps on-screen text ≥ ~11px on a 390px phone
+DEVICE_SCALE = 2          # output is 960 px wide
 TILE_HEIGHT = 3000        # CSS px per CDP capture tile
 MAX_SLICE_HEIGHT = 14900  # device px; WeChat's cap is 15,000
 MAX_SLICE_BYTES = 10_000_000

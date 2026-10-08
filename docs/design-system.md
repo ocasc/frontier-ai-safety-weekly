@@ -1,7 +1,11 @@
 # Design system
 
-The layout is a WeChat 公众号 long-image: a 640 px container rendered at
-device scale 2 (1200 px output). `template/issue-template.html` is the
+The layout is a WeChat 公众号 long-image: a container rendered at device
+scale 2 in a **480 CSS px viewport (960 px output)**. That width is the
+readability lever: WeChat displays the image at ~358 px content width on a
+390 px phone, so on-screen text size ≈ CSS font × 0.75 — body 16.5 px lands
+at ≈12 px, the floor for comfortable reading. Keep content fonts ≥15 px.
+`template/issue-template.html` is the
 canonical implementation — treat its CSS as the source of truth and this
 document as the rationale and rules.
 
@@ -9,12 +13,13 @@ document as the rationale and rules.
 
 | Element | Size | Notes |
 |---|---|---|
-| Body (card list items) | 15.5 px | line-height 1.95 |
-| TLDR items | 15 px | inside `.tldr-panel` |
+| Body (card list items) | 16.5 px | line-height 1.95 |
+| TLDR items (`.map-item`) | 16 px | inside `.tldr-panel` |
 | Card title (`.h3`) | 21 px | bold |
 | Card number (`.pnum`) | 22 px | bold, no frame, no `#` prefix |
-| Figure caption (`.fig-title`) | 16 px | bold, below the figure |
-| Meta / footnote | 13 px | grey `#8A9099` |
+| Figure caption (`.fig-title`) | 17 px | bold, below the figure |
+| Meta / link list / footnote | 15 px | grey `#8A9099` |
+| Section labels (`.h2` / `.cat-head`) | 17.5 / 17 px | badges |
 
 Font stack: `"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif`.
 

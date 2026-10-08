@@ -46,7 +46,10 @@
 
 ## Mobile fit
 
-At 1200 px wide the image scales to ≈ 0.325 on a 390 px phone: body text
-lands around 10 px and footnotes around 8.5 px. If legibility matters more
-than fidelity to the print-width design, prefer a 1080 px canvas (+11%
-effective font size) and 15 px footnotes.
+The 480 CSS px canvas exists for the phone: WeChat shows long images at
+~358 px content width on a 390 px phone, so on-screen size ≈ CSS font ×
+0.75. Body 16.5 px → ≈12 px, small text 15 px → ≈11 px. Never drop content
+fonts below 15 px; if something must be smaller, accept that it is
+decorative. Figures embedded at column width always display at ~screen
+width regardless of canvas size — screenshot legibility must be fixed by
+cropping tighter, not by canvas changes.

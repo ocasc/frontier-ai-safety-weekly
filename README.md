@@ -20,7 +20,7 @@ Published by [OCASC — Open Community for AI Safety China](https://github.com/o
    categories match the manifest, importance ordering holds, table columns
    match their declared widths, images load, and nothing overflows the
    container.
-2. **A 1200 px-wide @2x long image**, stitched from short CDP capture tiles —
+2. **A 960 px-wide @2x long image**, stitched from short CDP capture tiles —
    Chrome's full-page screenshot silently repeats raster tiles beyond 16,384
    device pixels, corrupting very long captures (see `docs/qa-checklist.md`).
 3. **WeChat upload slices** cut at card gaps (each < 15,000 px tall, < 10 MB).
