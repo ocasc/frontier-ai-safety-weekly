@@ -126,9 +126,13 @@
       </div>
       <div class="meta">来源：Source，Sep 03｜时间/范围限定语</div>
       <!-- Structured content without a usable figure: hierarchical table.
-           Every table needs a colgroup whose widths sum to 100%. -->
+           Every table needs a colgroup whose widths sum to 100%.
+           Size label columns from the longest label: chars x 15 px + 18 px
+           padding (4 CJK chars need >=21%), and never put white-space:nowrap
+           on a td/th — a nowrap label wider than its column overflows the
+           cell border. -->
       <table class="optimized-table" style="width:100%;table-layout:fixed;border-collapse:collapse;margin:16px 0 6px;font-size:15px;line-height:1.7;">
-        <colgroup><col style="width:20%;"><col style="width:30%;"><col style="width:50%;"></colgroup>
+        <colgroup><col style="width:22%;"><col style="width:28%;"><col style="width:50%;"></colgroup>
         <tr>
           <th style="border:1px solid #e2e4e8;padding:6px 9px;text-align:left;vertical-align:top;background:#F3F4F6;font-weight:700;overflow-wrap:anywhere;">维度</th>
           <th style="border:1px solid #e2e4e8;padding:6px 9px;text-align:left;vertical-align:top;background:#F3F4F6;font-weight:700;overflow-wrap:anywhere;">措施</th>
