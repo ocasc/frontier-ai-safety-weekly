@@ -149,17 +149,32 @@ def capture_long(page) -> Image.Image:
 
 
 def split_for_wechat(image: Image.Image, cards_rect: list, out_dir: Path, label: str) -> list:
-    """Cut slices at card gaps: y = floor(card_top*DEVICE_SCALE) - 16 device px."""
-    split_points = [0, image.height]
-    for rect in cards_rect:
-        split_points.append(max(1, math.floor(rect["y"] * DEVICE_SCALE - 16)))
-    split_points = sorted(set(split_points))
+    """Cut slices at CATEGORY boundaries so a cat-head banner never separates
+    from its cards. Greedy-pack whole groups under the cap; fall back to card
+    gaps (y = floor(card_top*DEVICE_SCALE) - 16 device px) only for a group
+    that itself exceeds the cap."""
+    gaps = [cards_rect[i + 1]["y"] - (cards_rect[i]["y"] + cards_rect[i]["h"])
+            for i in range(len(cards_rect) - 1)]
+    bounds = [0]
+    for i, g in enumerate(gaps):
+        if g > 40:  # group gap: cut in the margin ABOVE the cat-head banner
+            bounds.append(max(1, math.floor((cards_rect[i]["y"] + cards_rect[i]["h"]) * DEVICE_SCALE + 32)))
+    bounds.append(image.height)
+    card_cuts = sorted({max(1, math.floor(r["y"] * DEVICE_SCALE - 16)) for r in cards_rect})
     start, part, files = 0, 1, []
     out_dir.mkdir(parents=True, exist_ok=True)
     while start < image.height:
-        endpoints = [y for y in split_points if start < y <= start + MAX_SLICE_HEIGHT]
-        assert endpoints, (label, "no legal split point after device px", start)
-        end = max(endpoints)
+        end = start
+        for bnd in bounds:
+            if bnd <= start:
+                continue
+            if bnd - start > MAX_SLICE_HEIGHT:
+                break
+            end = bnd
+        if end == start:
+            fits = [y for y in card_cuts if start < y <= start + MAX_SLICE_HEIGHT]
+            assert fits, (label, "no legal split point after device px", start)
+            end = max(fits)
         upload = out_dir / f"part{part}.jpg"
         image.crop((0, start, image.width, end)).convert("RGB").save(upload, "JPEG", quality=95)
         assert end - start < 15000 and upload.stat().st_size < MAX_SLICE_BYTES, (label, upload)
