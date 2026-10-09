@@ -6,8 +6,8 @@ Usage:
     python3 scripts/render_issue.py issues/demo     # one issue
 
 Per issue directory (issue.html + importance_order.json) this produces:
-    <id>.png                  full long image (960 px wide, @2x)
-    wechat_upload/part*.jpg   WeChat upload slices cut at card gaps
+    <id>.png                  full long image (1080 px wide: 3x supersampled)
+    wechat_upload/part*.png   WeChat upload slices cut at card gaps
                               (each < 15,000 px tall and < 10 MB)
     qa/<id>_checks.json       structural check dump
     qa/<id>_qa_*.png          element screenshots for visual QA
@@ -46,7 +46,9 @@ CHROME_CANDIDATES = [
     "/usr/bin/chromium-browser",
 ]
 VIEWPORT_WIDTH = 480      # CSS px; keeps on-screen text ≥ ~11px on a 390px phone
-DEVICE_SCALE = 2          # output is 960 px wide
+DEVICE_SCALE = 3          # 3x supersample; Lanczos down to OUTPUT_WIDTH
+OUTPUT_WIDTH = 1080       # WeChat's width ceiling — wider gets force-downscaled + recompressed
+SCALE = OUTPUT_WIDTH / VIEWPORT_WIDTH  # final device px per CSS px (2.25)
 TILE_HEIGHT = 3000        # CSS px per CDP capture tile
 MAX_SLICE_HEIGHT = 14900  # device px; WeChat's cap is 15,000
 MAX_SLICE_BYTES = 10_000_000
@@ -140,13 +142,19 @@ def run_checks(page, manifest: list, label: str) -> dict:
 def capture_long(page) -> Image.Image:
     tiles = []
     cdp = page.context.new_cdp_session(page)
+    # Emulation override + capture in ONE CDP session (a second session drops
+    # the scale). clip.scale must stay 1: clip.scale>1 re-lays-out at the clip
+    # zoom and drifts the raster ~3.5% from DOM rects (cuts cards at seams).
+    cdp.send("Emulation.setDeviceMetricsOverride",
+             {"width": VIEWPORT_WIDTH, "height": 900,
+              "deviceScaleFactor": DEVICE_SCALE, "mobile": False})
     for y in range(0, page.evaluate("document.documentElement.scrollHeight"), TILE_HEIGHT):
         capture = cdp.send("Page.captureScreenshot", {
             "format": "png",
             "captureBeyondViewport": True,
             "clip": {"x": 0, "y": y, "width": VIEWPORT_WIDTH,
                      "height": min(TILE_HEIGHT, page.evaluate("document.documentElement.scrollHeight") - y),
-                     "scale": DEVICE_SCALE},
+                     "scale": 1},
         })
         tiles.append(Image.open(io.BytesIO(base64.b64decode(capture["data"]))).convert("RGB"))
     cdp.detach()
@@ -155,7 +163,9 @@ def capture_long(page) -> Image.Image:
     for tile in tiles:
         stitched.paste(tile, (0, offset))
         offset += tile.height
-    return stitched
+    # 3x supersample, Lanczos down to the 1080px WeChat ceiling (crisper than native 2.25x).
+    return stitched.resize((OUTPUT_WIDTH, round(stitched.height * OUTPUT_WIDTH / stitched.width)),
+                           Image.Resampling.LANCZOS)
 
 
 def split_for_wechat(image: Image.Image, blocks: list, out_dir: Path, label: str) -> list:
@@ -179,15 +189,15 @@ def split_for_wechat(image: Image.Image, blocks: list, out_dir: Path, label: str
     for i in range(len(segs) - 1):
         bot = max(b["y"] + b["h"] for b in segs[i])
         top = min(b["y"] for b in segs[i + 1])
-        bounds.append((math.floor(bot * DEVICE_SCALE) + math.ceil(top * DEVICE_SCALE)) // 2)
+        bounds.append((math.floor(bot * SCALE) + math.ceil(top * SCALE)) // 2)
     bounds.append(image.height)
     part, files = 1, []
     out_dir.mkdir(parents=True, exist_ok=True)
     for i in range(len(segs)):
         start, end = bounds[i], bounds[i + 1]
         assert 0 < end - start < 15000, (label, part, end - start)
-        upload = out_dir / f"part{part}.jpg"
-        image.crop((0, start, image.width, end)).convert("RGB").save(upload, "JPEG", quality=95)
+        upload = out_dir / f"part{part}.png"
+        image.crop((0, start, image.width, end)).convert("RGB").save(upload, "PNG")
         assert end - start < 15000 and upload.stat().st_size < MAX_SLICE_BYTES, (label, upload)
         print(f"  slice {upload.relative_to(REPO)} {image.width}x{end - start} {upload.stat().st_size // 1024} KB")
         files.append(upload)
@@ -217,7 +227,7 @@ def render_issue(browser, issue_dir: Path) -> Path:
         (qa_dir / f"{label}_checks.json").write_text(json.dumps(checks, ensure_ascii=False, indent=2))
 
         with Image.open(output) as image:
-            assert checks["footer"]["y"] * DEVICE_SCALE + checks["footer"]["h"] * DEVICE_SCALE <= image.height + 2, \
+            assert checks["footer"]["y"] * SCALE + checks["footer"]["h"] * SCALE <= image.height + 2, \
                 (label, "content taller than capture")
             slices = split_for_wechat(image, checks["blocks"], issue_dir / "wechat_upload", label)
 
