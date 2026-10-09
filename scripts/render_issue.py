@@ -68,6 +68,10 @@ CHECK_JS = """() => {
     declaredColumns: [...document.querySelectorAll('table')].map(t => [...t.querySelectorAll('colgroup col')].map(c => parseFloat(c.style.width) / 100)),
     images: [...document.images].map(e => ({src: e.getAttribute('src'), loaded: e.complete && e.naturalWidth > 0, rect: rect(e)})),
     cardsRect: [...document.querySelectorAll('.card')].map(rect),
+    tlLens:[...document.querySelectorAll('.map-item')].map(e=>{const c=e.cloneNode(true); const n=c.querySelector('.num'); if(n)n.remove(); return c.textContent.trim().length;}),
+    cellLens:[...document.querySelectorAll('td,th')].map(e=>e.textContent.trim().length),
+    titleLens:[...document.querySelectorAll('.h3')].map(e=>[...e.childNodes].filter(n=>n.nodeType==3).map(n=>n.textContent).join('').trim().length),
+    hasMasthead: !!document.querySelector('h1,.issue-head'),
     blocks: [...document.querySelectorAll('.wechat-container > img, .h2, .tldr-panel, .cat-head, .card, .link-list, .footnote')].map(e => ({cls: e.className || 'img', ...rect(e)})),
     scrollWidth: document.documentElement.scrollWidth,
     pageHeight: document.documentElement.scrollHeight,
@@ -103,6 +107,10 @@ def run_checks(page, manifest: list, label: str) -> dict:
     for field in ["cards", "tldr", "links"]:
         assert checks[field] == sequence, (label, field, checks[field])
     assert checks["titles"] == [r["title"].strip() for r in manifest], (label, "titles")
+    assert not checks["hasMasthead"], (label, "no masthead/headline block: WeChat has its own title")
+    assert max(checks["tlLens"], default=0) <= 50, (label, "TLDR item over 50 chars", checks["tlLens"])
+    assert max(checks["cellLens"], default=0) <= 45, (label, "table cell over 45 chars", checks["cellLens"])
+    assert max(checks["titleLens"], default=0) <= 42, (label, "title over 42 chars", checks["titleLens"])
     assert checks["categories"] == [r["category"] for r in manifest], (label, "card categories")
     assert checks["tldrCategories"] == [r["category"] for r in manifest], (label, "TLDR categories")
     assert len(checks["categoryHeads"]) == len(set(checks["categories"])), (label, "category heads")
