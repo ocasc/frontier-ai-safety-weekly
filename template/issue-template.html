@@ -16,6 +16,8 @@
 /* House rules enforced by scripts/render_issue.py (asserts fail the render):
    - No masthead/H1 block: the WeChat article has its own title; the image opens with the cover.
    - Card titles <= 42 chars, TLDR items <= 50 chars, table cells <= 45 chars (key-message first).
+   - TLDR items are news-wire sentences: one complete clause WITH the key qualifier
+     (可能/称/约) — never a colon + keyword list, never drop a hedge that changes the claim.
    - Tables = quick-reference layer: short fluent sentences, no paragraphs; label columns sized
      from measured single-line text width + padding (no nowrap on td/th; per-word spans for terms).
    - WeChat upload = one picture per article: [cover] [TLDR] [each card] [links+footnote]. */
