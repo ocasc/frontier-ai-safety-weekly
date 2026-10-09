@@ -68,6 +68,7 @@ CHECK_JS = """() => {
     declaredColumns: [...document.querySelectorAll('table')].map(t => [...t.querySelectorAll('colgroup col')].map(c => parseFloat(c.style.width) / 100)),
     images: [...document.images].map(e => ({src: e.getAttribute('src'), loaded: e.complete && e.naturalWidth > 0, rect: rect(e)})),
     cardsRect: [...document.querySelectorAll('.card')].map(rect),
+    blocks: [...document.querySelectorAll('.wechat-container > img, .h2, .tldr-panel, .cat-head, .card, .link-list, .footnote')].map(e => ({cls: e.className || 'img', ...rect(e)})),
     scrollWidth: document.documentElement.scrollWidth,
     pageHeight: document.documentElement.scrollHeight,
     footer: rect(document.querySelector('.footnote')),
@@ -148,33 +149,34 @@ def capture_long(page) -> Image.Image:
     return stitched
 
 
-def split_for_wechat(image: Image.Image, cards_rect: list, out_dir: Path, label: str) -> list:
-    """Cut slices at CATEGORY boundaries so a cat-head banner never separates
-    from its cards. Greedy-pack whole groups under the cap; fall back to card
-    gaps (y = floor(card_top*DEVICE_SCALE) - 16 device px) only for a group
-    that itself exceeds the cap."""
-    gaps = [cards_rect[i + 1]["y"] - (cards_rect[i]["y"] + cards_rect[i]["h"])
-            for i in range(len(cards_rect) - 1)]
+def split_for_wechat(image: Image.Image, blocks: list, out_dir: Path, label: str) -> list:
+    """One picture per article: [cover] [TLDR] [card x N] [links+footnote].
+    A cat-head banner rides with the card it introduces; boundaries sit at gap
+    midpoints (white by construction)."""
+    segs = []
+    for blk in blocks:
+        cls = blk["cls"]
+        if cls in ("img", "h2", "cat-head"):
+            segs.append([blk])
+        elif cls.split()[0] == "card":  # tolerates legacy 'card deep'
+            if segs and len(segs[-1]) == 1 and segs[-1][0]["cls"] == "cat-head":
+                segs[-1].append(blk)
+            else:
+                segs.append([blk])
+        else:  # tldr-panel / link-list / footnote join the heading above
+            assert segs, (label, cls)
+            segs[-1].append(blk)
     bounds = [0]
-    for i, g in enumerate(gaps):
-        if g > 40:  # group gap: cut in the margin ABOVE the cat-head banner
-            bounds.append(max(1, math.floor((cards_rect[i]["y"] + cards_rect[i]["h"]) * DEVICE_SCALE + 32)))
+    for i in range(len(segs) - 1):
+        bot = max(b["y"] + b["h"] for b in segs[i])
+        top = min(b["y"] for b in segs[i + 1])
+        bounds.append((math.floor(bot * DEVICE_SCALE) + math.ceil(top * DEVICE_SCALE)) // 2)
     bounds.append(image.height)
-    card_cuts = sorted({max(1, math.floor(r["y"] * DEVICE_SCALE - 16)) for r in cards_rect})
-    start, part, files = 0, 1, []
+    part, files = 1, []
     out_dir.mkdir(parents=True, exist_ok=True)
-    while start < image.height:
-        end = start
-        for bnd in bounds:
-            if bnd <= start:
-                continue
-            if bnd - start > MAX_SLICE_HEIGHT:
-                break
-            end = bnd
-        if end == start:
-            fits = [y for y in card_cuts if start < y <= start + MAX_SLICE_HEIGHT]
-            assert fits, (label, "no legal split point after device px", start)
-            end = max(fits)
+    for i in range(len(segs)):
+        start, end = bounds[i], bounds[i + 1]
+        assert 0 < end - start < 15000, (label, part, end - start)
         upload = out_dir / f"part{part}.jpg"
         image.crop((0, start, image.width, end)).convert("RGB").save(upload, "JPEG", quality=95)
         assert end - start < 15000 and upload.stat().st_size < MAX_SLICE_BYTES, (label, upload)
@@ -208,7 +210,7 @@ def render_issue(browser, issue_dir: Path) -> Path:
         with Image.open(output) as image:
             assert checks["footer"]["y"] * DEVICE_SCALE + checks["footer"]["h"] * DEVICE_SCALE <= image.height + 2, \
                 (label, "content taller than capture")
-            slices = split_for_wechat(image, checks["cardsRect"], issue_dir / "wechat_upload", label)
+            slices = split_for_wechat(image, checks["blocks"], issue_dir / "wechat_upload", label)
 
         package = issue_dir / f"{label}.zip"
         with zipfile.ZipFile(package, "w", zipfile.ZIP_DEFLATED) as z:
