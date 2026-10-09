@@ -52,6 +52,7 @@ MAX_SLICE_HEIGHT = 14900  # device px; WeChat's cap is 15,000
 MAX_SLICE_BYTES = 10_000_000
 
 CHECK_JS = """() => {
+ const wlen = s => [...s].reduce((a,ch)=>a+(/[\u4e00-\u9fff\u3000-\u303f\uff00-\uffef]/.test(ch)?2:1),0);
   const text = sel => [...document.querySelectorAll(sel)].map(e => e.textContent.trim());
   const rect = e => { const r = e.getBoundingClientRect(); return {x:r.x, y:r.y, w:r.width, h:r.height}; };
   return {
@@ -68,9 +69,9 @@ CHECK_JS = """() => {
     declaredColumns: [...document.querySelectorAll('table')].map(t => [...t.querySelectorAll('colgroup col')].map(c => parseFloat(c.style.width) / 100)),
     images: [...document.images].map(e => ({src: e.getAttribute('src'), loaded: e.complete && e.naturalWidth > 0, rect: rect(e)})),
     cardsRect: [...document.querySelectorAll('.card')].map(rect),
-    tlLens:[...document.querySelectorAll('.map-item')].map(e=>{const c=e.cloneNode(true); const n=c.querySelector('.num'); if(n)n.remove(); return c.textContent.trim().length;}),
-    cellLens:[...document.querySelectorAll('td,th')].map(e=>e.textContent.trim().length),
-    titleLens:[...document.querySelectorAll('.h3')].map(e=>[...e.childNodes].filter(n=>n.nodeType==3).map(n=>n.textContent).join('').trim().length),
+    tlLens:[...document.querySelectorAll('.map-item')].map(e=>{const c=e.cloneNode(true); const n=c.querySelector('.num'); if(n)n.remove(); return wlen(c.textContent.trim());}),
+    cellLens:[...document.querySelectorAll('td,th')].map(e=>wlen(e.textContent.trim())),
+    titleLens:[...document.querySelectorAll('.h3')].map(e=>wlen([...e.childNodes].filter(n=>n.nodeType==3).map(n=>n.textContent).join('').trim())),
     hasMasthead: !!document.querySelector('h1,.issue-head'),
     blocks: [...document.querySelectorAll('.wechat-container > img, .h2, .tldr-panel, .cat-head, .card, .link-list, .footnote')].map(e => ({cls: e.className || 'img', ...rect(e)})),
     scrollWidth: document.documentElement.scrollWidth,
@@ -108,9 +109,9 @@ def run_checks(page, manifest: list, label: str) -> dict:
         assert checks[field] == sequence, (label, field, checks[field])
     assert checks["titles"] == [r["title"].strip() for r in manifest], (label, "titles")
     assert not checks["hasMasthead"], (label, "no masthead/headline block: WeChat has its own title")
-    assert max(checks["tlLens"], default=0) <= 50, (label, "TLDR item over 50 chars", checks["tlLens"])
-    assert max(checks["cellLens"], default=0) <= 45, (label, "table cell over 45 chars", checks["cellLens"])
-    assert max(checks["titleLens"], default=0) <= 42, (label, "title over 42 chars", checks["titleLens"])
+    assert max(checks["tlLens"], default=0) <= 100, (label, "TLDR item over 50 CJK-width", checks["tlLens"])
+    assert max(checks["cellLens"], default=0) <= 90, (label, "table cell over 45 CJK-width", checks["cellLens"])
+    assert max(checks["titleLens"], default=0) <= 84, (label, "title over 42 CJK-width", checks["titleLens"])
     assert checks["categories"] == [r["category"] for r in manifest], (label, "card categories")
     assert checks["tldrCategories"] == [r["category"] for r in manifest], (label, "TLDR categories")
     assert len(checks["categoryHeads"]) == len(set(checks["categories"])), (label, "category heads")
