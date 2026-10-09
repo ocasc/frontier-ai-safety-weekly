@@ -39,6 +39,7 @@ template/importance_order.example.json
 scripts/render_issue.py          render + QA + slice + package
 scripts/render_cover.py          cover card at @2x and @1x
 scripts/trim_issue.py            trim trailing whitespace of a long image
+scripts/edit_serve.py            editable text + autosave-to-disk proofreading server
 docs/design-system.md            typography, surfaces, numbering, colors
 docs/content-guidelines.md       editorial red lines and card structure
 docs/qa-checklist.md             automated + manual QA, known pitfalls
@@ -71,6 +72,24 @@ Verify the pipeline out of the box with the placeholder issue:
 ```bash
 python3 scripts/render_issue.py issues/demo
 ```
+
+## Live text editing (proofreading)
+
+Serve an issue's HTML with in-browser editable text that writes back to the
+same file as you type:
+
+```bash
+python3 scripts/edit_serve.py issues/<id>/issue.html
+```
+
+Open the printed `http://127.0.0.1:8765/` and edit any text block in place.
+Edits autosave to the file (~0.8 s after typing stops; `Ctrl/Cmd+S` forces a
+save; closing the tab flushes pending edits; the corner badge shows the save
+state). The written-back file is clean: the injected editor script, the badge,
+and all `contenteditable`/`spellcheck` attributes are stripped before saving,
+and only leaf text nodes are editable, so the markup structure — and the
+structural QA assertions — stay intact. The server listens on 127.0.0.1 only,
+serves assets from the target file's directory, and writes to that one file.
 
 ## Publishing to WeChat 公众号
 
