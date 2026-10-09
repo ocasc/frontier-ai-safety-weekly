@@ -19,7 +19,7 @@ document as the rationale and rules.
 | Card number (`.pnum`) | 22 px | bold, no frame, no `#` prefix |
 | Figure caption (`.fig-title`) | 17 px | bold, below the figure |
 | Meta / link list / footnote | 15 px | grey `#8A9099` |
-| Section labels (`.h2` / `.cat-head`) | 17.5 / 17 px | badges |
+| Section labels (`.h2` / `.cat-head`) | 17.5 / 16 px | badges; cat-head stays one line (nowrap) |
 
 Font stack: `"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif`.
 
