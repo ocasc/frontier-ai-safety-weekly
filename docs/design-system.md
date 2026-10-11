@@ -38,7 +38,8 @@ Font stack: `"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif`.
 
 Cards are numbered 1–N **in display order**, and the same numbers appear in
 the TLDR panel (`.num`) and the link roundup (`.lnum`). The render script
-asserts all three sequences.
+asserts all three sequences. TLDR numbers are bare numerals in the category
+color — no chip background, no frame (2026-10-11).
 
 Card order: group cards by category, keep `importance_rank` ascending within
 each group, and order groups by their first rank. The
@@ -58,12 +59,12 @@ shifts the first line and squeezes item 1's number out of the container.
 
 ## Categories and colors
 
-| English (primary) | 中文 | Color | Tint (number chip) |
-|---|---|---|---|
-| Misalignment | 错对齐案例 | `#A25433` | `#F4EBE6` |
-| Oversight & Control | 监督与控制 | `#3D5A94` | `#E9EEF6` |
-| Safeguards & Security | 防护与安全 | `#667078` | `#EEF0F2` |
-| Safety Cases & System Cards | 安全案例与系统卡 | `#4A6B57` | `#E9F0EC` |
+| English (primary) | 中文 | Color |
+|---|---|---|
+| Misalignment | 错对齐案例 | `#A25433` |
+| Oversight & Control | 监督与控制 | `#3D5A94` |
+| Safeguards & Security | 防护与安全 | `#667078` |
+| Safety Cases & System Cards | 安全案例与系统卡 | `#4A6B57` |
 
 The taxonomy axis is the **research object**, matching the field's standard
 split (misalignment reports, scalable oversight / AI control, safeguards,
