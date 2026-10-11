@@ -16,8 +16,10 @@ Per issue directory (issue.html + importance_order.json) this produces:
 Why tiles: Chrome's full-page screenshot silently repeats raster tiles
 beyond 16,384 device pixels, which corrupts very long captures even though
 DOM geometry is correct. We instead capture short CSS-coordinate tiles via
-CDP Page.captureScreenshot (captureBeyondViewport, clip.scale=2) and stitch
-them at native resolution without rescaling.
+CDP Page.captureScreenshot (captureBeyondViewport, clip.scale=1 — a larger
+clip.scale re-lays-out at the clip zoom and drifts the raster ~3.5% from DOM
+rects, cutting cards at seams), stitch them without rescaling, then Lanczos-
+downscale the 3x supersample to the 1080 px WeChat width ceiling.
 
 Manifest format (issues/<id>/importance_order.json), one entry per card in
 display order:
@@ -63,12 +65,14 @@ CHECK_JS = """() => {
     links: text('.lnum'),
     titles: text('.title-en'),
     categories: [...document.querySelectorAll('.card')].map(e => e.dataset.category),
-    tldrCategories: [...document.querySelectorAll('.map-item')].map(e => e.dataset.category),
+    tldrCategories: [...document.querySelectorAll('.map-item')].map(e => e.dataset.category || (() => { const h = e.parentElement.querySelector('.map-head').textContent; return h.includes('错对齐') ? '错对齐' : h.includes('监督与控制') ? '监督与控制' : h.includes('防护与安全') ? '防护与安全' : '安全案例'; })()),
     importanceRanks: [...document.querySelectorAll('.card')].map(e => Number(e.dataset.importanceRank)),
     mapHeads: text('.map-head'),
     categoryHeads: text('.cat-head'),
     tableColumns: [...document.querySelectorAll('table')].map(t => [...t.querySelector('tr').cells].map(e => e.getBoundingClientRect().width)),
     declaredColumns: [...document.querySelectorAll('table')].map(t => [...t.querySelectorAll('colgroup col')].map(c => parseFloat(c.style.width) / 100)),
+    tableAlignments: [...document.querySelectorAll('th,td')].map(e => { const s = getComputedStyle(e); return [s.textAlign, s.verticalAlign]; }),
+    labelIndents: [...document.querySelectorAll('.map-category')].map(e => getComputedStyle(e).textIndent),
     images: [...document.images].map(e => ({src: e.getAttribute('src'), loaded: e.complete && e.naturalWidth > 0, rect: rect(e)})),
     cardsRect: [...document.querySelectorAll('.card')].map(rect),
     tlLens:[...document.querySelectorAll('.map-item')].map(e=>{const c=e.cloneNode(true); const n=c.querySelector('.num'); if(n)n.remove(); return wlen(c.textContent.trim());}),
@@ -131,6 +135,7 @@ def run_checks(page, manifest: list, label: str) -> dict:
         total = sum(widths)
         assert len(widths) == len(ratios) and abs(sum(ratios) - 1) < 0.001, (label, widths, ratios)
         assert all(abs(w / total - r) < 0.005 for w, r in zip(widths, ratios)), (label, widths)
+    assert all(a == ["left", "top"] for a in checks["tableAlignments"]), (label, checks["tableAlignments"])
     assert all(image["loaded"] for image in checks["images"]), (label, "images failed to load")
     assert checks["scrollWidth"] == VIEWPORT_WIDTH, (label, checks["scrollWidth"])
     for rect in checks["nodes"]:
@@ -198,6 +203,8 @@ def split_for_wechat(image: Image.Image, blocks: list, out_dir: Path, label: str
         assert 0 < end - start < 15000, (label, part, end - start)
         upload = out_dir / f"part{part}.png"
         image.crop((0, start, image.width, end)).convert("RGB").save(upload, "PNG")
+        if upload.stat().st_size > 5_000_000:
+            print(f"  WARN over 5MB: {upload.name} {upload.stat().st_size} bytes")
         assert end - start < 15000 and upload.stat().st_size < MAX_SLICE_BYTES, (label, upload)
         print(f"  slice {upload.relative_to(REPO)} {image.width}x{end - start} {upload.stat().st_size // 1024} KB")
         files.append(upload)
@@ -224,6 +231,8 @@ def render_issue(browser, issue_dir: Path) -> Path:
         qa_dir.mkdir(exist_ok=True)
         page.locator(".tldr-panel").screenshot(path=str(qa_dir / f"{label}_qa_tldr.png"))
         page.locator(".card").first.screenshot(path=str(qa_dir / f"{label}_qa_first.png"))
+        if page.locator("table").count():
+            page.locator("table").first.screenshot(path=str(qa_dir / f"{label}_qa_table.png"))
         (qa_dir / f"{label}_checks.json").write_text(json.dumps(checks, ensure_ascii=False, indent=2))
 
         with Image.open(output) as image:

@@ -20,12 +20,18 @@ Published by [OCASC — Open Community for AI Safety China](https://github.com/o
    categories match the manifest, importance ordering holds, table columns
    match their declared widths, images load, and nothing overflows the
    container.
-2. **A 960 px-wide @2x long image**, stitched from short CDP capture tiles —
+2. **A 1080 px-wide long image** (3× supersampled, Lanczos-downscaled),
+   stitched from short CDP capture tiles —
    Chrome's full-page screenshot silently repeats raster tiles beyond 16,384
    device pixels, corrupting very long captures (see `docs/qa-checklist.md`).
 3. **WeChat upload slices** cut at card gaps (each < 15,000 px tall, < 10 MB).
 4. **A delivery zip** bundling the HTML, assets, slices, manifest, and check
    dump.
+
+This script is kept behaviorally identical to the production renderer run
+for the real issues (same assertions, CDP capture, slicing, and packaging);
+the production driver itself is issue-specific and lives with the local
+content corpus, which is not published here.
 
 ## Repository layout
 
@@ -64,7 +70,7 @@ pip install -r requirements.txt
 python3 scripts/render_issue.py issues/<id>
 ```
 
-Outputs land next to the source: `<id>.png`, `wechat_upload/part*.jpg`,
+Outputs land next to the source: `<id>.png`, `wechat_upload/part*.png`,
 `qa/`, and `<id>.zip`.
 
 Verify the pipeline out of the box with the placeholder issue:
@@ -94,7 +100,7 @@ serves assets from the target file's directory, and writes to that one file.
 ## Publishing to WeChat 公众号
 
 The article body cannot contain external links — put the full source list in
-「阅读原文」. Create a new 图文 post, insert `wechat_upload/part*.jpg` strictly
+「阅读原文」. Create a new 图文 post, insert `wechat_upload/part*.png` strictly
 in order, then title/cover/abstract, preview on a phone, publish.
 
 ## License and attribution
