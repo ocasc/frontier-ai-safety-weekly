@@ -13,3 +13,10 @@ __pycache__/
 
 # OS
 .DS_Store
+# Video pipeline artifacts (regenerate from scripts)
+video/audio*/
+video/frames*/
+video/probe*/
+video/_audit_frames/
+video/*.wav
+video/*.mp4

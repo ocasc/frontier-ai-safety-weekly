@@ -46,6 +46,8 @@ scripts/render_issue.py          render + QA + slice + package
 scripts/render_cover.py          cover card at @2x and @1x
 scripts/trim_issue.py            trim trailing whitespace of a long image
 scripts/edit_serve.py            editable text + autosave-to-disk proofreading server
+video/                           narrated explainer pipeline (optional, see video/README.md)
+video/prompt_animation.md        model-facing brief for a new animated card
 docs/design-system.md            typography, surfaces, numbering, colors
 docs/content-guidelines.md       editorial red lines and card structure
 docs/qa-checklist.md             automated + manual QA, known pitfalls
@@ -96,6 +98,20 @@ and all `contenteditable`/`spellcheck` attributes are stripped before saving,
 and only leaf text nodes are editable, so the markup structure — and the
 structural QA assertions — stay intact. The server listens on 127.0.0.1 only,
 serves assets from the target file's directory, and writes to that one file.
+
+## Narrated explainer video (optional)
+
+`video/` turns one card's script into a 1080p narrated motion-graphics cut:
+
+1. `narration.py` — MiniMax `t2a_v2` per segment, then `timings.json` + `narration.wav`.
+2. `bgm.py` — beat grid plus a music bed trimmed to the exact cut length (crossfade-looped
+   when the track is shorter than the video).
+3. `render.py` — headless-Chrome frame render of an HTML canvas `renderAt(t)`, ffmpeg encode,
+   sidechain-ducked voice/music mix.
+4. `audit_video.py` — 3 fps audit for layout-band violations, stalled scenes, blank frames, audio gaps.
+
+Nothing in the chain touches the issue renderer, and no issue content is committed here: the
+live run happens inside `<issue>/video/` next to the scripts and audio. See `video/README.md`.
 
 ## Publishing to WeChat 公众号
 
