@@ -1,25 +1,23 @@
 # Design system
 
-The layout is a WeChat 公众号 long-image: a container rendered at device
-scale 2 in a **480 CSS px viewport (960 px output)**. That width is the
-readability lever: WeChat displays the image at ~358 px content width on a
-390 px phone, so on-screen text size ≈ CSS font × 0.75 — body 16.5 px lands
-at ≈12 px, the floor for comfortable reading. Keep content fonts ≥15 px.
-`template/issue-template.html` is the
-canonical implementation — treat its CSS as the source of truth and this
-document as the rationale and rules.
+The public template is a WeChat 公众号 **long-image** layout rendered in a
+480 CSS px viewport at device scale 3, then downsampled to 1080 px output.
+At an approximately 358 px content width on a phone, text appears at about
+0.75 times its CSS size. `template/issue-template.html` is the source of
+truth for this long-image template. Current native text-and-image issues use
+a separate production workflow that is not included here.
 
 ## Typography
 
 | Element | Size | Notes |
 |---|---|---|
-| Body (card list items) | 16.5 px | line-height 1.95 |
-| TLDR items (`.map-item`) | 16 px | inside `.tldr-panel` |
-| Card title (`.h3`) | 21 px | bold |
-| Card number (`.pnum`) | 22 px | bold, no frame, no `#` prefix |
-| Figure caption (`.fig-title`) | 17 px | bold, below the figure |
-| Meta / link list / footnote | 15 px | grey `#8A9099` |
-| Section labels (`.h2` / `.cat-head`) | 17.5 / 16 px | badges; cat-head stays one line (nowrap) |
+| Body (card list items) | 21 px | line-height 1.95 |
+| TLDR items (`.map-item`) | 20 px | inside `.tldr-panel` |
+| Card title (`.h3`) | 25 px | bold |
+| Card number (`.pnum`) | 26 px | bold, no frame, no `#` prefix |
+| Figure caption (`.fig-title`) | 21 px | bold, below the figure |
+| Meta / link list / footnote | 18 px | grey `#8A9099` |
+| Section labels (`.h2` / `.cat-head`) | 21 / 17 px | badges; cat-head stays one line (nowrap) |
 
 Font stack: `"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif`.
 
@@ -32,7 +30,7 @@ Font stack: `"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif`.
 - **Labels**: black badge = section (`TLDR`, `本期链接汇总`); colored badge =
   category (`.cat-head`).
 - **Quote block** (`.quote`, kept for future use): light 1 px `#e2e4e8`
-  rounded frame, 15 px quote text, 13 px grey source note.
+  rounded frame, 18 px quote text and grey source note.
 
 ## Numbering
 
@@ -59,17 +57,17 @@ shifts the first line and squeezes item 1's number out of the container.
 
 ## Categories and colors
 
-| English (primary) | 中文 | Color |
-|---|---|---|
-| Misalignment | 错对齐案例 | `#A25433` |
-| Oversight & Control | 监督与控制 | `#3D5A94` |
-| Safeguards & Security | 防护与安全 | `#667078` |
-| Safety Cases & System Cards | 安全案例与系统卡 | `#4A6B57` |
+| 中文 | Color |
+|---|---|
+| 错对齐与欺骗 | `#A25433` |
+| 控制 | `#3D5A94` |
+| 评估与审计 | `#4A6B57` |
+| 可解释性 | `#6B5B95` |
+| 保证与标准 | `#8A6A3B` |
 
-The taxonomy axis is the **research object**, matching the field's standard
-split (misalignment reports, scalable oversight / AI control, safeguards,
-safety cases), not a media rubric. A `.map-head` label must match its
-`.cat-head` label exactly.
+Categories are ordered by the first appearance of their most important card,
+not by the fixed order of this table. A `.map-head` label must match its
+`.cat-head` label exactly. Only categories present in an issue are needed.
 
 ## Chinese typography
 

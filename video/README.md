@@ -63,9 +63,8 @@ before anything else.
 
 ## Scope
 
-These are the scripts used for the weekly's card explainers, mirrored here so
-they can be reused. The live chain runs inside an issue's `video/` directory
-together with the content (scripts, narration text, audio), which is not
-published in this repository. `prompt_animation.md` is the model-facing brief
-that produced the original animation and is the fastest way to get a new
+These scripts mirror an earlier card-explainer workflow for reuse; they are
+not the current vertical-video production pipeline. Issue content and audio
+are not published in this repository. `prompt_animation.md` is the model-facing
+brief that produced the original animation and is the fastest way to get a new
 `video.html`.

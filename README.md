@@ -1,14 +1,16 @@
-# Frontier AI Safety Weekly — production kit
+# Frontier AI Safety Biweekly — production kit
 
 Template, render pipeline, and editorial rules behind **Frontier AI Safety
-Weekly** (前沿 AI 安全周刊) — a Chinese-language weekly long-image digest for
-the frontier AI safety technical community, laid out for WeChat 公众号
-publishing.
+Biweekly** (前沿 AI 安全双周刊), a Chinese-language digest for the frontier
+AI safety technical community. The publication is scheduled every two weeks.
+The repository URL retains its original `weekly` name for existing links.
 
-This repository contains the **tooling and layout template**. Finished
-issues are published as images on WeChat and are not distributed here; the
-`issues/demo/` entry is placeholder content that exists to keep the pipeline
-verifiable.
+This public repository contains **tooling, templates and synthetic examples**,
+not finished issues, research-source caches or production credentials.
+`issues/demo/` is placeholder content for testing. The long-image renderer
+here is an earlier production path; current issues may use native WeChat
+text-and-image formatting, whose production scripts and content are not
+included. This repository is not a complete backup of the live workflow.
 
 Published by [OCASC — Open Community for AI Safety China](https://github.com/ocasc).
 
@@ -28,10 +30,10 @@ Published by [OCASC — Open Community for AI Safety China](https://github.com/o
 4. **A delivery zip** bundling the HTML, assets, slices, manifest, and check
    dump.
 
-This script is kept behaviorally identical to the production renderer run
-for the real issues (same assertions, CDP capture, slicing, and packaging);
-the production driver itself is issue-specific and lives with the local
-content corpus, which is not published here.
+The long-image pipeline is maintained separately from the current native
+WeChat production flow. It is not claimed to be behaviorally identical to
+the live renderer. The production driver and issue content are not published
+here.
 
 ## Repository layout
 
@@ -66,7 +68,11 @@ pip install -r requirements.txt
    `data-importance-rank`, plus `.title-en`).
 2. Copy `template/importance_order.example.json` to
    `issues/<id>/importance_order.json` and list the cards in display order.
-3. Render:
+3. For the optional cover image, edit and render `template/cover-template.html`
+   with `python3 scripts/render_cover.py template/cover-template.html`, then
+   copy `template/cover-template@2x.png` to `issues/<id>/img/cover@2x.png`.
+   Alternatively, remove the cover `<img>` from the issue HTML.
+4. Render:
 
 ```bash
 python3 scripts/render_issue.py issues/<id>
@@ -79,6 +85,12 @@ Verify the pipeline out of the box with the placeholder issue:
 
 ```bash
 python3 scripts/render_issue.py issues/demo
+```
+
+Run the synthetic regression suite (requires Chrome and the dependencies above):
+
+```bash
+python3 -m unittest discover -s tests -v
 ```
 
 ## Live text editing (proofreading)
@@ -101,7 +113,8 @@ serves assets from the target file's directory, and writes to that one file.
 
 ## Narrated explainer video (optional)
 
-`video/` turns one card's script into a 1080p narrated motion-graphics cut:
+`video/` contains an earlier 1080p narrated motion-graphics workflow. It is
+not the current vertical-video production workflow:
 
 1. `narration.py` — MiniMax `t2a_v2` per segment, then `timings.json` + `narration.wav`.
 2. `bgm.py` — beat grid plus a music bed trimmed to the exact cut length (crossfade-looped
@@ -110,8 +123,8 @@ serves assets from the target file's directory, and writes to that one file.
    sidechain-ducked voice/music mix.
 4. `audit_video.py` — 3 fps audit for layout-band violations, stalled scenes, blank frames, audio gaps.
 
-Nothing in the chain touches the issue renderer, and no issue content is committed here: the
-live run happens inside `<issue>/video/` next to the scripts and audio. See `video/README.md`.
+No issue content or current video project is committed here. The earlier
+workflow and its dependencies are described in `video/README.md`.
 
 ## Publishing to WeChat 公众号
 

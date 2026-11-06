@@ -10,14 +10,14 @@ break them and the numbers stop being trustworthy.
    figure that gets a detail wrong damages credibility more than no figure.
    Translated versions of a figure are allowed only as clearly labelled
    translations ("据原图中译") of the original.
-2. **Every card body is structured figure/quotation first, prose after.**
+2. **When using a figure or quotation, put it before the related prose.**
 3. **Evidence-class illustrations are original screenshots** (e.g. a tool
    call, a prompt-injection excerpt) with the key line marked by a red
    underline, plus a 「图：…」 caption below.
-4. Text-only stories with no usable figure: express the structured content as
-   a **hierarchical table** (merged category cells, each row appearing once)
-   instead of a quotation block.
-5. Quotation block style (if used): light frame, 15 px quote, grey source
+4. Prefer a meaningful figure when available. Use a table for parallel items
+   with a genuinely comparable structure; otherwise use clear prose. Avoid
+   repeating in prose what the figure or table already shows.
+5. Quotation block style (if used): light frame, 18 px quote, grey source
    note (`.quote-src`).
 
 Third-party figures and screenshots remain the property of their owners and
@@ -33,10 +33,10 @@ are **not** covered by this repository's license (see `NOTICE.md`).
 
 ## Card structure
 
-- Incident-type stories use the three-part form: **经过 / 核心 /
-  为什么重要** (what happened / the core issue / why it matters).
-- Research/argument stories may use **做了什么 / 核心 / 为什么重要** or a
-  mechanism/limits split — keep bold lead-in labels.
+- Use **做了什么 / 结果 / 为什么重要** as the default structure. If a
+  card compares independent pieces of work, group by the actual subject
+  rather than forcing the same structure onto both.
+- Maintain source, numbers, conditions and uncertainty when shortening text.
 - Each card carries `data-category` and `data-importance-rank` (must match
   `importance_order.json`), a `.pnum`, a Chinese title, and a `.title-en`
   line (original title · source · date).

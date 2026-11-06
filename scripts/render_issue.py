@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render Frontier AI Safety Weekly issues into QA-checked deliverables.
+"""Render Frontier AI Safety Biweekly issues into QA-checked deliverables.
 
 Usage:
     python3 scripts/render_issue.py                 # every issues/*/issue.html
@@ -65,7 +65,16 @@ CHECK_JS = """() => {
     links: text('.lnum'),
     titles: text('.title-en'),
     categories: [...document.querySelectorAll('.card')].map(e => e.dataset.category),
-    tldrCategories: [...document.querySelectorAll('.map-item')].map(e => e.dataset.category || (() => { const h = e.parentElement.querySelector('.map-head').textContent; return h.includes('错对齐') ? '错对齐' : h.includes('监督与控制') ? '监督与控制' : h.includes('防护与安全') ? '防护与安全' : '安全案例'; })()),
+    tldrCategories: [...document.querySelectorAll('.map-item')].map(e => {
+      if (e.dataset.category) return e.dataset.category;
+      const h = e.closest('.map-box')?.querySelector('.map-head')?.textContent.trim() || '';
+      const legacy = [['错对齐案例','错对齐'], ['监督与控制','监督与控制'],
+                      ['防护与安全','防护与安全'], ['安全案例','安全案例']];
+      const old = legacy.find(([name]) => h.includes(name));
+      if (old) return old[1];
+      const current = ['错对齐与欺骗','控制','评估与审计','可解释性','保证与标准'];
+      return current.find(name => h.includes(name)) || null;
+    }),
     importanceRanks: [...document.querySelectorAll('.card')].map(e => Number(e.dataset.importanceRank)),
     mapHeads: text('.map-head'),
     categoryHeads: text('.cat-head'),
@@ -124,9 +133,12 @@ def run_checks(page, manifest: list, label: str) -> dict:
     assert checks["categoryHeads"] == checks["mapHeads"], (label, "heads mismatch")
     ranks = [r["importance_rank"] for r in manifest]
     assert checks["importanceRanks"] == ranks, (label, "importance ranks")
+    assert all(type(r) is int and r > 0 for r in ranks) and len(set(ranks)) == n, (label, "importance ranks must be unique positive integers")
     assert checks["importanceRanks"][0] == 1, (label, "first card must hold rank 1")
     category_order = list(dict.fromkeys(checks["categories"]))
     groups = [[r for r, c in zip(ranks, checks["categories"]) if c == cat] for cat in category_order]
+    grouped_categories = [cat for cat, group in zip(category_order, groups) for _ in group]
+    assert checks["categories"] == grouped_categories, (label, "categories must be contiguous")
     for group in groups:
         assert group == sorted(group), (label, "ranks ascending within category", group)
     firsts = [g[0] for g in groups]
@@ -206,7 +218,7 @@ def split_for_wechat(image: Image.Image, blocks: list, out_dir: Path, label: str
         if upload.stat().st_size > 5_000_000:
             print(f"  WARN over 5MB: {upload.name} {upload.stat().st_size} bytes")
         assert end - start < 15000 and upload.stat().st_size < MAX_SLICE_BYTES, (label, upload)
-        print(f"  slice {upload.relative_to(REPO)} {image.width}x{end - start} {upload.stat().st_size // 1024} KB")
+        print(f"  slice {upload} {image.width}x{end - start} {upload.stat().st_size // 1024} KB")
         files.append(upload)
         part += 1
         start = end
@@ -271,7 +283,7 @@ def main() -> None:
             for issue_dir in dirs:
                 print(f"rendering {issue_dir} ...")
                 package = render_issue(browser, issue_dir)
-                print(f"  package: {package.relative_to(REPO)}")
+                print(f"  package: {package}")
         finally:
             browser.close()
 
