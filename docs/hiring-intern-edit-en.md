@@ -1,50 +1,62 @@
-# Editorial Intern, Frontier AI Safety Biweekly (Chinese-language)
+# Editorial Intern, Frontier AI Safety Biweekly
 
-Open Community for AI Safety China (OCASC) publishes a Chinese-language AI safety biweekly: nine stories every two weeks as a long-form visual article for WeChat, plus a ten-minute podcast. We work from arXiv papers and lab or evaluator reports directly. Drafts come from our scripts and models, and a human edits them until they are publishable. The community has 600+ members and reaches 10,000+ readers.
+**Open Community for AI Safety China (OCASC)** publishes a Chinese-language AI safety biweekly. We are looking for one or two editorial interns to take each issue from draft to publication.
 
-## The work
+|  |  |
+|---|---|
+| **Positions** | Editorial intern, one or two |
+| **Location** | Remote; optional meetups in Shanghai |
+| **Time** | 6 to 10 hours a week, minimum 3 months |
+| **Pay** | Stipend, set by stage |
+| **Language** | Written Chinese required, reading English required |
+| **Certificate** | Internship certificate provided |
+| **Apply** | [Application form](https://wj.qq.com/s2/28521902/2n7h), about two minutes |
 
-Cut the draft to publishable quality:
+## About the publication
 
-- check numbers and conclusions against the original paper, not second-hand summaries
-- rewrite stiff, machine-sounding Chinese into sentences people can read; keep established Chinese terms, keep the English word where no Chinese equivalent exists
-- add one line of context for readers outside the field
-- keep headlines honest, and make sure the visual story and the podcast script agree
+Every two weeks we publish nine stories as a long-form visual article on WeChat, with a companion podcast of roughly ten minutes. We work from primary sources: arXiv papers, reports released by labs, and documents from evaluators and standards bodies. The community has 600+ members and reaches more than 10,000 readers.
 
-No writing from scratch. Editorial judgment is what this role trains.
+Drafts are produced by our scripts and models. A person edits them until they are publishable. That edit is the job.
 
-## Growth
+## What the work looks like
 
-The first two issues you shadow the edit. From issue three you own an issue end to end, from topic selection to publication. Later you can take a standing section or the whole pipeline and train new interns. If you can carry an issue alone, you can take over the publication itself: choosing topics, working with authors and guests.
+- Check numbers and conclusions against the original paper, not against second-hand summaries.
+- Rewrite stiff, machine-sounding Chinese into sentences a reader can follow. Keep established Chinese terms, and keep the English word where no Chinese equivalent exists.
+- Supply the one line of context a non-specialist needs, and stop at that line.
+- Keep headlines honest about what the research shows, and keep the visual story and the podcast script consistent with each other.
+- Read the finished issue once more before it goes out.
+
+You will not be writing from scratch. The skill this trains is judgment: which story matters, which claim carries the argument, and what a reader has to know first.
+
+## How the role grows
+
+The first two issues you shadow the edit with us. From the third, you own an issue end to end, from topic selection to publication, with one review before it ships. After that you can take a standing section or the whole production flow and train new interns. If you can carry an issue alone, you can take over the publication itself: setting the editorial line, working with authors and guests.
 
 ## What you get
 
-- six to seven issues in three months, twenty-six a year
-- judgment about which stories matter, useful at AI labs, think tanks and newsrooms
-- published work for your portfolio
-- a team that will write references and pass on opportunities; OCASC courses, seminars and meetups are open to members
-- a stipend, and an internship certificate
+- Six to seven issues of editorial experience in three months, twenty-six in a year
+- Published work for a portfolio
+- Judgment about which stories matter, which carries over to labs, think tanks and newsrooms
+- A team willing to write references and pass on opportunities
+- Access to OCASC courses, seminars and meetups
+- A stipend and an internship certificate
 
-## Requirements
+## Who we are looking for
 
-- fluent written Chinese, since the publication is in Chinese
-- able to read English papers and reports
-- 6 to 10 hours a week for at least 3 months
-- remote; Shanghai meetups optional
+- Fluent written Chinese. The publication is in Chinese, so this one is not negotiable.
+- Comfortable reading English papers and reports.
+- 6 to 10 hours a week for at least 3 months.
+- Interest in AI safety, technology policy or science writing. Prior knowledge of AI safety is not required.
+- Experience in research, translation or editorial work is a plus.
 
-## Compensation
+## How to apply
 
-A stipend, set by stage. The intern stage and the editor-in-charge stage are discussed separately.
+Fill in the [application form](https://wj.qq.com/s2/28521902/2n7h). It is in Chinese and takes about two minutes. It will ask for one or two samples of your writing on technology, AI or policy, written in Chinese, plus a LinkedIn, personal site or CV link.
 
-## To apply
+We reply within a week. Shortlisted candidates do one trial edit with us, so both sides can see how the collaboration feels before committing.
 
-Send one or two samples of your Chinese writing on technology, AI or policy, plus a LinkedIn, personal site or CV link. The application form is in Chinese: https://wj.qq.com/s2/28521902/2n7h
+Applications are reviewed on a rolling basis until the positions are filled.
 
-We reply within a week. Shortlisted candidates do one trial edit with us, so both sides can see how it goes.
+## About OCASC
 
-Applications are reviewed on a rolling basis.
-
----
-
-Website: https://aisafety-cn.com/
-GitHub: https://github.com/ocasc
+OCASC is a Chinese-language community for AI safety. Its members include researchers, engineers, and people from policy and law. The community runs courses, including a Chinese edition of BlueDot Impact's curriculum, alongside paper reading groups, seminars and in-person meetups. More at [aisafety-cn.com](https://aisafety-cn.com/) and [github.com/ocasc](https://github.com/ocasc).
