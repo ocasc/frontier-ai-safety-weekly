@@ -21,14 +21,14 @@ From the third issue you can take an issue yourself, from picking the stories to
 
 - You write Chinese clearly.
 - You can read a paper in English without a translator.
-- 6 to 10 hours a week, for at least three months.
+- 3 to 5 hours a week, for at least three months.
 - You've written articles, reports or translations before, or worked in research.
 
 Prior knowledge of AI safety isn't required.
 
 ## Practical details
 
-Remote, with the option of meeting in Shanghai. The stipend is set by stage: the intern stage and the issue-lead stage are discussed separately. An internship certificate is provided.
+Remote, and you set your own hours. The stipend is set by stage: the intern stage and the issue-lead stage are discussed separately. An internship certificate is provided.
 
 - Six or seven issues in three months, twenty-six in a year if you stay
 - Your work published publicly, and usable in a portfolio
