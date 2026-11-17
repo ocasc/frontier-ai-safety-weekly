@@ -38,7 +38,7 @@ Remote, and you set your own hours. The stipend is set by stage: the intern stag
 
 ## How to apply
 
-Fill in the [application form](https://wj.qq.com/s2/28521902/2n7h). It is in Chinese and takes about two minutes. The form asks for links, not files, so have one or two pieces of your Chinese writing on technology, AI or policy ready to paste, plus a LinkedIn, personal site or CV link. Nothing to upload.
+Fill in the [application form](https://wj.qq.com/s2/28521902/2n7h). It is in Chinese and takes about two minutes. Please provide links to one or two pieces of your Chinese writing on technology, AI or policy. A LinkedIn, personal website or online CV link and a CV upload are optional.
 
 We reply within one week. If it looks like a good fit, we send you a real card to edit and we both see how it goes.
 
